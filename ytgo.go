@@ -105,12 +105,10 @@ func main() {
 	audioPath = path + "audio.mpg"
 	audiotwoPath = path + "audiotwo.mp3"
 
-	// dirPath := "/usr/local/gotemp"
 	fmt.Println("Downloading video...")
 
 	videoURL = os.Args[1]
 	// videoRes := os.Args[2]
-	// var resolution string
 
 	go download(audioPath, videoURL, 0, cda)
 	go download(videoPath, videoURL, 1, cdv)
@@ -134,16 +132,3 @@ func main() {
 	delete(audiotwoPath)
 	fmt.Println("Download is over!")
 }
-
-// ID codes
-// 609: 1280x720   30 fps
-// 612: 1280x720   60 fps
-
-// 614: 1920x1080  30 fps
-// 617: 1920x1080  60 fps
-
-// 620: 2560x1440  30 fps
-// 623: 2560x1440  60 fps
-
-// 625: 3840x2160  30 fps
-// 628: 3840x2160  60 fps
