@@ -35,8 +35,9 @@ For a 8 minutes long 1080p30 video, the entire process takes 2m45s and using gor
 # Next steps:
 - [X] Modularize
 - [X] Implementing GoRoutines
-- [ ] Set resolution from command line too
+- [X] Set resolution from command line too
 - [ ] Use CLI (with Cobra)
+- [ ] Download only audio
 - [ ] Download playlist
 - [ ] Host in my main PC
 - [ ] API to download from my main PC and send to another

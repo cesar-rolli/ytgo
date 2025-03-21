@@ -9,22 +9,12 @@ import (
 )
 
 // Responsible to download from URL both video and audio
-func download(vPath, vURL string, n int, done chan bool) {
-	switch n {
-	case 0: // Download audio
-		cmdVideo := exec.Command("yt-dlp", "-f", "251", "-o", vPath, vURL)
-		err := cmdVideo.Run()
-		if err != nil {
-			fmt.Println("Download goes wrong: ", err)
-			return
-		}
-	case 1: // Download video
-		cmdVideo := exec.Command("yt-dlp", "-f", "614", "-o", vPath, vURL)
-		err := cmdVideo.Run()
-		if err != nil {
-			fmt.Println("Download goes wrong: ", err)
-			return
-		}
+func download(vPath, vURL, vRes string, done chan bool) {
+	cmdVideo := exec.Command("yt-dlp", "-f", vRes, "-o", vPath, vURL)
+	err := cmdVideo.Run()
+	if err != nil {
+		fmt.Println("Download goes wrong: ", err)
+		return
 	}
 
 	done <- true
@@ -52,8 +42,8 @@ func convert(vPath, v2Path string, n int, done chan bool) {
 	done <- true
 }
 
-// Overlap audio and video together and get video's name
-func overlap(vPath, aPath, vURL string, done chan bool) {
+// Merge audio and video together and get video's name
+func merge(vPath, aPath, vURL string, done chan bool) {
 	cmdFilename := exec.Command("yt-dlp", "-f", "best", "-o", "%(title)s.%(ext)s", "--print", "filename", vURL)
 
 	var out bytes.Buffer
@@ -71,7 +61,7 @@ func overlap(vPath, aPath, vURL string, done chan bool) {
 
 	err = cmdCombine.Run()
 	if err != nil {
-		fmt.Println("Overlap goes wrong: ", err)
+		fmt.Println("Merge goes wrong: ", err)
 		return
 	}
 
@@ -88,13 +78,14 @@ func delete(file string) {
 }
 
 func main() {
-	cda := make(chan bool)
-	cdv := make(chan bool)
-	cdo := make(chan bool)
-	cdcv := make(chan bool)
-	cdca := make(chan bool)
+	cda := make(chan bool)  // Channel Done Audio
+	cdv := make(chan bool)  // Channel Done Video
+	cdm := make(chan bool)  // Channel Done Merge
+	cdcv := make(chan bool) // Channel Done Convert Video
+	cdca := make(chan bool) // Channel Done Convert Audio
 
 	var videoURL string
+	var videoResolution string
 	var videoPath string
 	var videotwoPath string
 	var audioPath string
@@ -108,23 +99,23 @@ func main() {
 	fmt.Println("Downloading video...")
 
 	videoURL = os.Args[1]
-	// videoRes := os.Args[2]
+	videoResolution = os.Args[2]
 
-	go download(audioPath, videoURL, 0, cda)
-	go download(videoPath, videoURL, 1, cdv)
+	go download(audioPath, videoURL, "251", cda)           // AUDIO
+	go download(videoPath, videoURL, videoResolution, cdv) // VIDEO
 	<-cda
 	<-cdv
 
 	fmt.Println("Download has finished, starting conversion...")
 
-	go convert(audioPath, audiotwoPath, 0, cdca)
-	go convert(videoPath, videotwoPath, 1, cdcv)
+	go convert(audioPath, audiotwoPath, 0, cdca) // AUDIO
+	go convert(videoPath, videotwoPath, 1, cdcv) // VIDEO
 	<-cdca
 	<-cdcv
 
-	fmt.Println("Conversion has finished, starting overlaping...")
-	go overlap(videotwoPath, audiotwoPath, videoURL, cdo)
-	<-cdo
+	fmt.Println("Conversion has finished, starting merging...")
+	go merge(videotwoPath, audiotwoPath, videoURL, cdm)
+	<-cdm
 
 	delete(videoPath)
 	delete(audioPath)
