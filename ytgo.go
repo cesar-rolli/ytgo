@@ -16,7 +16,6 @@ func download(vPath, vURL, vRes string, done chan bool) {
 		fmt.Println("Download goes wrong: ", err)
 		return
 	}
-
 	done <- true
 }
 
@@ -38,15 +37,13 @@ func convert(vPath, v2Path string, n int, done chan bool) {
 			return
 		}
 	}
-
 	done <- true
 }
 
 // Merge audio and video together and get video's name
 func merge(vPath, aPath, vURL string, done chan bool) {
-	cmdFilename := exec.Command("yt-dlp", "-f", "best", "-o", "%(title)s.%(ext)s", "--print", "filename", vURL)
-
 	var out bytes.Buffer
+	cmdFilename := exec.Command("yt-dlp", "-f", "best", "-o", "%(title)s.%(ext)s", "--print", "filename", vURL)
 	cmdFilename.Stdout = &out
 
 	err := cmdFilename.Run()
@@ -56,7 +53,6 @@ func merge(vPath, aPath, vURL string, done chan bool) {
 	}
 
 	outputVideo := "/Users/cesar/Downloads/" + strings.TrimSpace(out.String()) // Remove \n and extra spaces
-
 	cmdCombine := exec.Command("ffmpeg", "-i", vPath, "-i", aPath, "-c:v", "copy", "-c:a", "aac", outputVideo)
 
 	err = cmdCombine.Run()
@@ -64,7 +60,6 @@ func merge(vPath, aPath, vURL string, done chan bool) {
 		fmt.Println("Merge goes wrong: ", err)
 		return
 	}
-
 	done <- true
 }
 
@@ -78,6 +73,7 @@ func delete(file string) {
 }
 
 func main() {
+	// Variables and GoRoutines
 	cda := make(chan bool)  // Channel Done Audio
 	cdv := make(chan bool)  // Channel Done Video
 	cdm := make(chan bool)  // Channel Done Merge
@@ -95,6 +91,8 @@ func main() {
 	videotwoPath = path + "videotwo.mp4"
 	audioPath = path + "audio.mpg"
 	audiotwoPath = path + "audiotwo.mp3"
+
+	// CobraCLI
 
 	fmt.Println("Downloading video...")
 
