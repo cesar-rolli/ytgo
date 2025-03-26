@@ -55,7 +55,7 @@ ID  |Resolution |  FPS  | Type
 
 
 # Notes
-Using Go Routines, time increase just a few seconds. For downloading a 1080p 30FPS video with 5m18s, it takes 1m24s using Go Routines, and not using it takes 1m28s. For a audio in the same video, drop for 15.9s to 15.7s. I use a MacBook M2 with 8GB to run this simple test. I'll let this code with Go Routines just to good practice.
+Using Go Routines, time decrease just a few seconds. For a test, I downloaded a 1080p 30FPS video with 5m18s, it takes 1m24s using Go Routines and 1m28s not using. Downloading an audio with the same video, drop from 15.9s to 15.7s. I use a MacBook M2 with 8GB to run this simple test. I'll let this code with Go Routines just to good practices.
 
 
 # Next steps:
