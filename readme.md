@@ -8,13 +8,13 @@ A CLI tool to download YouTube videos in any resolution. It download in 24 or 60
 		
 Shorthand|Name|Usage
 :--:|:---------:|:-----:|
--f | --1080p | Set 1080p resolution for your link
+-F | --1080p | Set 1080p resolution for your link
 -2 | --1440p | Set 1440p resolution for your link
 -4 | --2160p | Set 2160p resolution for your link
--d | --720p | Set 720p resolution for your link
--a | --audio | Download only the audio from your link
+-D | --720p | Set 720p resolution for your link
+-A | --audio | Download only the audio from your link
 -h | --help | help for ytgo
--l | --link string | Paste your link between quotation marks
+-L | --link string | Paste your link between quotation marks
 
 
 # Technologies

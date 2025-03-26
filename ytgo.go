@@ -99,12 +99,12 @@ var rootCmd = &cobra.Command{
 
 // Params for CLI
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&link, "link", "l", "", "Paste a link from a YouTube video")
-	rootCmd.PersistentFlags().BoolVarP(&hd, "720p", "d", false, "Set this resolution for your link")
-	rootCmd.PersistentFlags().BoolVarP(&fullhd, "1080p", "f", false, "Set this resolution for your link")
+	rootCmd.PersistentFlags().StringVarP(&link, "link", "L", "", "Paste a link from a YouTube video")
+	rootCmd.PersistentFlags().BoolVarP(&hd, "720p", "H", false, "Set this resolution for your link")
+	rootCmd.PersistentFlags().BoolVarP(&fullhd, "1080p", "F", false, "Set this resolution for your link")
 	rootCmd.PersistentFlags().BoolVarP(&twok, "1440p", "2", false, "Set this resolution for your link")
 	rootCmd.PersistentFlags().BoolVarP(&fourk, "2160p", "4", false, "Set this resolution for your link")
-	rootCmd.PersistentFlags().BoolVarP(&audio, "audio", "a", false, "Download only the audio from your link")
+	rootCmd.PersistentFlags().BoolVarP(&audio, "audio", "A", false, "Download only the audio from your link")
 }
 
 // YOUTUBE DOWNLOAD
