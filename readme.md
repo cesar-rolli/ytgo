@@ -33,6 +33,14 @@ https://www.ffmpeg.org/download.html
 # Debug
 ### Get info about playlist
 ```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"os/exec"
+)
+
 type Playlist struct {
 	Title   string `json:"title"`
 	Entries []struct {
@@ -57,8 +65,8 @@ func main() {
 		return
 	}
 
-	fmt.Printf(playlist.Title)         // Playlist title
-	fmt.Printf(len(playlist.Entries))  // How many videos are in playlist
+	fmt.Println(playlist.Title)         // Playlist title
+	fmt.Println(len(playlist.Entries))  // How many videos are in playlist
 
 	fmt.Println("Video links:")
 	for i := 0; i < len(playlist.Entries); i++ {
@@ -67,9 +75,43 @@ func main() {
 }
 ```
 
+### Get FPS
+```go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"os/exec"
+	"strings"
+)
+
+func main() {
+	var out bytes.Buffer
+	videoURL := "https://www.youtube.com/watch?v=EXAMPLE"
+	cmdFPS := exec.Command("yt-dlp", "--print", "fps", videoURL)
+	cmdFPS.Stdout = &out
+	err := cmdFPS.Run()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(strings.TrimSpace(out.String()))
+}
+```
+
 
 ### Get ID codes
 ```go
+package main
+
+import (
+	"fmt"
+	"os/exec"
+)
+
+func main() {
+	videoURL := "https://www.youtube.com/watch?v=EXAMPLE"
 	cmdVideo := exec.Command("yt-dlp", "-F", videoURL)
 	output, err := cmdVideo.Output()
 	if err != nil {
@@ -77,6 +119,7 @@ func main() {
 		return
 	}
 	fmt.Println(string(output))
+}
 ```
 
 
@@ -95,7 +138,9 @@ ID  |Resolution |  FPS  | Type
 
 
 # Notes
-Using Go Routines, time decrease just a few seconds. For a test, I downloaded a 1080p 30FPS video with 5m18s, it takes 1m24s using Go Routines and 1m28s not using. Downloading an audio with the same video, drop from 15.9s to 15.7s. I use a MacBook M2 with 8GB to run this simple test. I'll let this code with Go Routines just to good practices.
+Using Go Routines, time decrease just a few seconds. For a test, I downloaded a 1080p 30FPS video with 5m18s, it takes 1m24s using Go Routines and 1m28s not using. Downloading an audio with the same video, drop from 15.9s to 15.7s.
+
+I use a MacBook M2 with 8GB to run this simple test. I'll let this code with Go Routines just to good practices.
 
 
 # Next steps:
