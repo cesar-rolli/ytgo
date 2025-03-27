@@ -1,5 +1,5 @@
 # ytgo
-A CLI tool to download YouTube videos in any resolution. It download in 24 or 60 FPS automatically.
+A CLI tool to download YouTube videos and playlists in any resolution. It download in 24 or 60 FPS automatically.
 
 # Flags
 ```bash
@@ -15,6 +15,8 @@ Shorthand|Name|Usage
 -A | --audio | Download only the audio from your link
 -h | --help | help for ytgo
 -L | --link string | Paste your link between quotation marks
+-P | --playlist-audio | Download all videos from playlist, but only audio
+-Q | --playlist-video | Download all videos from playlist
 
 
 # Technologies
@@ -28,7 +30,45 @@ go get -u github.com/spf13/cobra@latest
 https://www.ffmpeg.org/download.html
 
 
-## Get ID codes
+# Debug
+### Get info about playlist
+```go
+type Playlist struct {
+	Title   string `json:"title"`
+	Entries []struct {
+		ID string `json:"id"`
+	} `json:"entries"`
+}
+
+func main() {
+	playlistURL := "https://www.youtube.com/playlist?list=EXEMPLE"
+
+	cmd := exec.Command("yt-dlp", "--flat-playlist", "-J", playlistURL)
+	output, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Error in your link:", err)
+		return
+	}
+
+	var playlist Playlist
+	err = json.Unmarshal(output, &playlist)
+	if err != nil {
+		fmt.Println("JSON problem:", err)
+		return
+	}
+
+	fmt.Printf(playlist.Title)         // Playlist title
+	fmt.Printf(len(playlist.Entries))  // How many videos are in playlist
+
+	fmt.Println("Video links:")
+	for i := 0; i < len(playlist.Entries); i++ {
+		fmt.Println("https://www.youtube.com/watch?v=" + playlist.Entries[i].ID)
+	}
+}
+```
+
+
+### Get ID codes
 ```go
 	cmdVideo := exec.Command("yt-dlp", "-F", videoURL)
 	output, err := cmdVideo.Output()
@@ -64,7 +104,7 @@ Using Go Routines, time decrease just a few seconds. For a test, I downloaded a 
 - [X] Set resolution from command line too
 - [X] Use CLI (with Cobra)
 - [X] Download only audio
-- [ ] Download playlist
+- [X] Download playlist
 - [ ] Progress bar
 - [ ] Host in my main PC
 - [ ] API to download from my main PC and send to another
