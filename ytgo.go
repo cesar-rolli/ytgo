@@ -43,8 +43,8 @@ var rootCmd = &cobra.Command{
 		videoPath = path + "video.mpg"
 		videotwoPath = path + "videotwo.mp4"
 		audioPath = path + "audio.mpg"
-		audiotwoPath = path + "audiotwo.mp3"
-		playlistFilePath := "/Users/cesar/Downloads/"
+		audiotwoPath = path + "audiotwo.m4a"
+		playlistFilePath := "/Users/cesar/Downloads"
 
 		cmdFPS := exec.Command("yt-dlp", "--print", "fps", link)
 		cmdFPS.Stdout = &out
@@ -111,6 +111,19 @@ var rootCmd = &cobra.Command{
 
 		switch fps {
 		case "24.0":
+			if hd {
+				process(link, audioPath, videoPath, audiotwoPath, videotwoPath, "609", playlistFilePath)
+			}
+			if fullhd {
+				process(link, audioPath, videoPath, audiotwoPath, videotwoPath, "614", playlistFilePath)
+			}
+			if twok {
+				process(link, audioPath, videoPath, audiotwoPath, videotwoPath, "620", playlistFilePath)
+			}
+			if fourk {
+				process(link, audioPath, videoPath, audiotwoPath, videotwoPath, "625", playlistFilePath)
+			}
+		case "25":
 			if hd {
 				process(link, audioPath, videoPath, audiotwoPath, videotwoPath, "609", playlistFilePath)
 			}
@@ -198,14 +211,14 @@ func downloadAudio(link, audioPath, playlistFilePath string) {
 func convert(vPath, v2Path string, n int, done chan bool) {
 	switch n {
 	case 0: // Convert audio
-		cmdConvert := exec.Command("ffmpeg", "-i", vPath, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "192k", v2Path)
+		cmdConvert := exec.Command("ffmpeg", "-i", vPath, "-q:a", "0", "-map", "a", v2Path)
 		err := cmdConvert.Run()
 		if err != nil {
 			fmt.Println("Audio conversion goes wrong: ", err)
 			return
 		}
 	case 1: // Convert video
-		cmdConvert := exec.Command("ffmpeg", "-i", vPath, "-c:v", "libx264", "-preset", "fast", "-crf", "23", "-c:a", "aac", "-b:a", "192k", v2Path)
+		cmdConvert := exec.Command("ffmpeg", "-i", vPath, "-c:v", "h264_videotoolbox", "-c:a", "aac", "-b:a", "128k", v2Path)
 		err := cmdConvert.Run()
 		if err != nil {
 			fmt.Println("Video conversion goes wrong: ", err)
